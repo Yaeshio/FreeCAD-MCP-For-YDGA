@@ -1,88 +1,96 @@
-[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/neka-nat-freecad-mcp-badge.png)](https://mseep.ai/app/neka-nat-freecad-mcp)
-
 # FreeCAD MCP
 
-This repository is a FreeCAD MCP that allows you to control FreeCAD from Claude Desktop.
+Claude Desktop から FreeCAD を操作できる MCP サーバーです。
 
-## Demo
+## デモ
 
-### Design a flange
+### フランジの設計
 
 ![demo](./assets/freecad_mcp4.gif)
 
-### Design a toy car
+### トイカーの設計
 
 ![demo](./assets/make_toycar4.gif)
 
-### Design a part from 2D drawing
+### 2D 図面から 3D パーツを設計
 
-#### Input 2D drawing
+#### 入力画像（2D 図面）
 
 ![input](./assets/b9-1.png)
 
-#### Demo
+#### デモ
 
 ![demo](./assets/from_2ddrawing.gif)
 
-This is the conversation history.
+会話履歴はこちら:
 https://claude.ai/share/7b48fd60-68ba-46fb-bb21-2fbb17399b48
 
-## Install addon
+## アドオンのインストール
 
-FreeCAD Addon directory is
-* Windows: `%APPDATA%\FreeCAD\Mod\`
-* Mac:
-  * FreeCAD 1.1: `~/Library/Application\ Support/FreeCAD/v1-1/Mod/`
-  * FreeCAD 1.0: `~/Library/Application\ Support/FreeCAD/v1-0/Mod/`
-* Linux:
-  * Ubuntu: `~/.FreeCAD/Mod/` or `~/snap/freecad/common/Mod/` (if you install FreeCAD from snap)
-  * Debian: `~/.local/share/FreeCAD/Mod`
-  * Arch / CachyOS (FreeCAD 1.1 from `extra/freecad`): `~/.local/share/FreeCAD/v1-1/Mod/`
+FreeCAD のアドオンディレクトリは以下の通りです。
 
-Please put `addon/FreeCADMCP` directory to the addon directory.
+| OS | バージョン | パス |
+|---|---|---|
+| Windows | FreeCAD 1.1 | `%APPDATA%\FreeCAD\v1-1\Mod\` |
+| Windows | FreeCAD 1.0 | `%APPDATA%\FreeCAD\Mod\` |
+| macOS | FreeCAD 1.1 | `~/Library/Application Support/FreeCAD/v1-1/Mod/` |
+| macOS | FreeCAD 1.0 | `~/Library/Application Support/FreeCAD/v1-0/Mod/` |
+| Linux (Ubuntu) | — | `~/.FreeCAD/Mod/`（snap の場合: `~/snap/freecad/common/Mod/`） |
+| Linux (Debian) | — | `~/.local/share/FreeCAD/Mod` |
+| Linux (Arch / CachyOS) | FreeCAD 1.1 | `~/.local/share/FreeCAD/v1-1/Mod/` |
+
+`addon/FreeCADMCP` ディレクトリを上記のアドオンディレクトリにコピーしてください。
 
 ```bash
-git clone https://github.com/neka-nat/freecad-mcp.git
-cd freecad-mcp
+git clone https://github.com/Yaeshio/FreeCAD-MCP-For-YDGA.git
+cd FreeCAD-MCP-For-YDGA
 
-# For Linux (Ubuntu/Debian)
+# Linux (Ubuntu/Debian)
 cp -r addon/FreeCADMCP ~/.FreeCAD/Mod/
 
-# For Linux (Arch/CachyOS, FreeCAD 1.1 from extra/freecad)
+# Linux (Arch/CachyOS, FreeCAD 1.1)
 mkdir -p ~/.local/share/FreeCAD/v1-1/Mod/
 cp -r addon/FreeCADMCP ~/.local/share/FreeCAD/v1-1/Mod/
 
-# For macOS (FreeCAD 1.1)
+# macOS (FreeCAD 1.1)
 cp -r addon/FreeCADMCP ~/Library/Application\ Support/FreeCAD/v1-1/Mod/
 ```
 
-When you install addon, you need to restart FreeCAD.
-You can select "MCP Addon" from Workbench list and use it.
+```powershell
+# Windows (PowerShell) - プロジェクトルートから実行
+# FreeCAD 1.1
+robocopy addon\FreeCADMCP "$env:APPDATA\FreeCAD\v1-1\Mod\FreeCADMCP" /E /NFL /NDL
+
+# FreeCAD 1.0
+robocopy addon\FreeCADMCP "$env:APPDATA\FreeCAD\Mod\FreeCADMCP" /E /NFL /NDL
+```
+
+インストール後、FreeCAD を再起動してください。  
+ワークベンチ一覧から **「MCP Addon」** を選択すると使用できます。
 
 ![workbench_list](./assets/workbench_list.png)
 
-And you can start RPC server by "Start RPC Server" command in "FreeCAD MCP" toolbar.
+**「FreeCAD MCP」** ツールバーの **「Start RPC Server」** をクリックして RPC サーバーを起動します。
 
 ![start_rpc_server](./assets/start_rpc_server.png)
 
-### Auto-Start RPC Server
+### RPC サーバーの自動起動
 
-By default, the RPC server must be started manually each time FreeCAD opens. To start it automatically:
+デフォルトでは FreeCAD を開くたびに手動で RPC サーバーを起動する必要があります。自動起動を有効にするには:
 
-1. Open the **FreeCAD MCP** menu (switch to the MCP Addon workbench first)
-2. Check **Auto-Start Server**
+1. MCP Addon ワークベンチに切り替えてから **「FreeCAD MCP」** メニューを開く
+2. **「Auto-Start Server」** にチェックを入れる
 
-The setting is saved to `freecad_mcp_settings.json` and persists across sessions. On the next FreeCAD launch, the RPC server will start automatically once the application finishes loading.
+設定は `freecad_mcp_settings.json` に保存され、次回以降の FreeCAD 起動時に自動的に RPC サーバーが起動します。  
+無効にするには同じメニューの **「Auto-Start Server」** のチェックを外してください。
 
-You can disable it at any time by unchecking **Auto-Start Server** in the same menu.
+## Claude Desktop のセットアップ
 
-## Setting up Claude Desktop
+事前に [uvx](https://docs.astral.sh/uv/guides/tools/) をインストールしてください。
 
-Pre-installation of the [uvx](https://docs.astral.sh/uv/guides/tools/) is required.
+Claude Desktop の設定ファイル `claude_desktop_config.json` を編集します。
 
-And you need to edit Claude Desktop config file, `claude_desktop_config.json`.
-
-For user.
+**通常ユーザー向け**
 
 ```json
 {
@@ -97,7 +105,7 @@ For user.
 }
 ```
 
-If you want to save token, you can set `only_text_feedback` to `true` and use only text feedback.
+トークンを節約したい場合は `--only-text-feedback` を追加します（スクリーンショットなし）。
 
 ```json
 {
@@ -113,12 +121,10 @@ If you want to save token, you can set `only_text_feedback` to `true` and use on
 }
 ```
 
-
-For developer.
-First, you need clone this repository.
+**開発者向け（ローカルクローンを使用）**
 
 ```bash
-git clone https://github.com/neka-nat/freecad-mcp.git
+git clone https://github.com/Yaeshio/FreeCAD-MCP-For-YDGA.git
 ```
 
 ```json
@@ -137,26 +143,26 @@ git clone https://github.com/neka-nat/freecad-mcp.git
 }
 ```
 
-## Remote Connections
+## リモート接続
 
-By default the RPC server does not accept remote connections and listens on `localhost`. To control FreeCAD from another machine on your network:
+デフォルトでは RPC サーバーは `localhost` のみで待ち受けます。別のマシンの FreeCAD を操作したい場合は以下の手順で設定してください。
 
-### 1. Enable remote connections in FreeCAD
+### 1. FreeCAD 側でリモート接続を有効化
 
-In the **FreeCAD MCP** toolbar:
+**「FreeCAD MCP」** ツールバーで:
 
-1. Check **Remote Connections** — the RPC server will bind to `0.0.0.0` (all interfaces) on the next restart. For security reasons, it only accepts connections from the IP addresses or CIDR subnets specified in the **Allowed IPs** field. By default this is `127.0.0.1`.
-2. Click **Configure Allowed IPs** and enter a comma-separated list of IP addresses or CIDR subnets that are allowed to connect, e.g.:
+1. **「Remote Connections」** にチェックを入れる — 次回再起動時に RPC サーバーが `0.0.0.0`（全インターフェース）でバインドされます。セキュリティのため、**「Allowed IPs」** で許可した IP アドレスまたは CIDR サブネットからの接続のみ受け付けます（デフォルト: `127.0.0.1`）。
+2. **「Configure Allowed IPs」** をクリックし、許可する IP アドレスまたは CIDR サブネットをカンマ区切りで入力します。例:
 
    ```
    192.168.1.100, 10.0.0.0/24
    ```
 
-   `127.0.0.1` is always the default. Invalid entries are rejected with an error dialog. Restart the RPC server after changing these settings.
+   設定変更後は RPC サーバーを再起動してください。
 
-### 2. Point the MCP server at the remote host
+### 2. MCP サーバーにリモートホストを指定
 
-Pass the `--host` flag with the IP address or hostname of the machine running FreeCAD:
+`--host` フラグに FreeCAD が動作するマシンの IP アドレスまたはホスト名を指定します。
 
 ```json
 {
@@ -172,26 +178,27 @@ Pass the `--host` flag with the IP address or hostname of the machine running Fr
 }
 ```
 
-The `--host` value is validated on startup — it must be a valid IPv4/IPv6 address or hostname.
+`--host` の値は起動時に検証されます（有効な IPv4/IPv6 アドレスまたはホスト名が必要）。
 
-## Tools
+## 利用可能なツール
 
-* `create_document`: Create a new document in FreeCAD.
-* `create_object`: Create a new object in FreeCAD.
-* `edit_object`: Edit an object in FreeCAD.
-* `delete_object`: Delete an object in FreeCAD.
-* `execute_code`: Execute arbitrary Python code in FreeCAD.
-* `insert_part_from_library`: Insert a part from the [parts library](https://github.com/FreeCAD/FreeCAD-library).
-* `get_view`: Get a screenshot of the active view.
-* `get_objects`: Get all objects in a document.
-* `get_object`: Get an object in a document.
-* `get_parts_list`: Get the list of parts in the [parts library](https://github.com/FreeCAD/FreeCAD-library).
-* `run_fem_analysis`: Run the CalculiX solver on an existing `Fem::FemAnalysis` and return summary results (max von Mises stress, max displacement, node count, working directory). Auto-creates a `SolverCcxTools` if the analysis has none. See [`examples/cantilever_fem.py`](examples/cantilever_fem.py) for an end-to-end usage example.
+| ツール名 | 説明 |
+|---|---|
+| `create_document` | FreeCAD に新しいドキュメントを作成する |
+| `create_object` | FreeCAD にオブジェクトを作成する |
+| `edit_object` | FreeCAD のオブジェクトを編集する |
+| `delete_object` | FreeCAD のオブジェクトを削除する |
+| `execute_code` | FreeCAD 上で任意の Python コードを実行する |
+| `execute_code_async` | GUI に触れない長時間処理を非同期で実行する |
+| `insert_part_from_library` | [パーツライブラリ](https://github.com/FreeCAD/FreeCAD-library) からパーツを挿入する |
+| `get_view` | アクティブビューのスクリーンショットを取得する |
+| `get_objects` | ドキュメント内の全オブジェクト一覧を取得する |
+| `get_object` | 指定オブジェクトのプロパティを取得する |
+| `get_parts_list` | [パーツライブラリ](https://github.com/FreeCAD/FreeCAD-library) のパーツ一覧を取得する |
+| `reload_document` | ドキュメントをディスクから再読み込みする |
+| `list_documents` | 開いているドキュメントの一覧を取得する |
+| `run_fem_analysis` | CalculiX ソルバーで FEM 解析を実行し、最大 von Mises 応力・最大変位・節点数などの結果を返す。使用例は [`examples/cantilever_fem.py`](examples/cantilever_fem.py) を参照 |
 
-## Contributors
+## 上流リポジトリ
 
-<a href="https://github.com/neka-nat/freecad-mcp/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=neka-nat/freecad-mcp" />
-</a>
-
-Made with [contrib.rocks](https://contrib.rocks).
+[neka-nat/freecad-mcp](https://github.com/neka-nat/freecad-mcp) をフォークしています。

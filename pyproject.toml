@@ -1,7 +1,7 @@
 [project]
 name = "freecad-mcp"
 version = "0.1.18"
-description = "Add your description here"
+description = "MCP server for controlling FreeCAD from Claude Desktop via XML-RPC"
 readme = "README.md"
 authors = [
     { name = "neka-nat", email = "nekanat.stock@gmail.com" }

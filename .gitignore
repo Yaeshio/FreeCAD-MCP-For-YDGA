@@ -1,1 +1,22 @@
 __pycache__/
+
+# Python 環境・ビルド成果物
+.venv/
+venv/
+dist/
+build/
+*.egg-info/
+*.pyc
+*.pyo
+.env
+
+# FreeCAD 一時ファイル
+*.FCStd~
+results/
+
+# ローカル Claude Code 設定（マシン固有パスを含む）
+.claude/settings.json
+
+# ツール出力・一時ファイル
+repomix-output.xml
+cylinder_view.png
